@@ -8,10 +8,16 @@ pFUnit has a lot of excellent features, but the documentation and tutorials are 
 and often out of date.
 This makes it a challenge to learn and utilize to the fullest extent.
 
+In this demo I take a simple Fortran code that multiplies two numbers together,
+supported by a simple pFUnit test.
+I then provide a parameterized version of the test to indicate the benefits of utilizing
+parameterization, and the changes required to accommodate it.
+
 
 ## Dependencies
 
-To run this code requires a Fortran compiler and to have pFUnit installed.
+To run this code requires a Fortran compiler (gfortran is assumed in the Makefile, but
+could be adjusted) pFUnit to be installed.
 You will need Make, or optionally CMake, to build.
 
 pFUnit can be installed as follows:
