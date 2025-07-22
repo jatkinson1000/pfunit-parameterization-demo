@@ -1,0 +1,96 @@
+# Workflow to build the code and run the tests
+name: TestBuild
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pushes to the "main" branch, i.e., PR merges
+  push:
+    branches: [ "main" ]
+
+  # Triggers the workflow on pushes to open pull requests with code changes
+  pull_request:
+    paths:
+#       - '.github/workflows/test_build.yml'
+#       - '**.f90'
+#       - '**.pf'
+#       - '**CMakeLists.txt'
+#       - '**Makefile'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Cancel jobs running if new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Restrict permissions to none below default
+permissions:
+  {}
+
+# Workflow run - one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "test-build"
+  test-build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        with:
+          persist-credentials: false
+        uses: actions/checkout@v4
+
+      - name: Install pFUnit
+        run: |
+          export FC=/usr/bin/gfortran
+          # NOTE: Version pinned as version appears in install path below
+          git clone -b v4.12.0 https://github.com/Goddard-Fortran-Ecosystem/pFUnit.git
+          cd pFUnit
+          cmake -B build
+          cd build
+          make -j 4 install
+
+      - name: Build Demo CMake
+        if: always()
+        run: |
+          # NOTE: The pFUnit version (pinned during installation above) is used in the install path.
+          export PFUNIT_DIR=$(pwd)/pFUnit/build/installed/PFUNIT-4.12
+          cmake -B build
+          cmake --build build
+
+      - name: Run tests CMake
+        if: always()
+        run: |
+          ./test_multiply > test_multiply.log 2>&1
+          ./test_multiply_param > test_multiply_param.log 2>&1
+          # Redirect output and exit 1 if grep matches "Failure" (returns 0)
+          cat test_multiply.log
+          grep -iq "failure" test_multiply.log && exit 1 || echo "grep exit code: $?"
+          cat test_multiply_param.log
+          grep -iq "failure" test_multiply_param.log && exit 1 || echo "grep exit code: $?"
+
+      - name: Build Demo Make
+        if: always()
+        env:
+          PFUNIT: ${{ github.workspace }}/pFUnit/build/installed/PFUNIT-4.12
+        run: |
+          # PFUNIT set as environment variable above
+          # NOTE: The pFUnit version (pinned during installation above) is used in the install path.
+          make clean-all
+          make
+
+      - name: Run tests Make
+        if: always()
+        run: |
+          ./test_multiply > test_multiply.log 2>&1
+          ./test_multiply_param > test_multiply_param.log 2>&1
+          # Redirect output and exit 1 if grep matches "Failure" (returns 0)
+          cat test_multiply.log
+          grep -iq "failure" test_multiply.log && exit 1 || echo "grep exit code: $?"
+          cat test_multiply_param.log
+          grep -iq "failure" test_multiply_param.log && exit 1 || echo "grep exit code: $?"
