@@ -11,7 +11,28 @@ module unittest_multiply_param
 
   public
 
+  !> Typedef for a test parameter for the multiply routine
+  @testParameter
+  type, extends(AbstractTestParameter) :: MultiplyTestParameters
+    real(wp) :: a, b, expected
+    character(:), allocatable :: desc
+   contains
+    procedure :: toString
+  end type MultiplyTestParameters
+
 contains
+
+  !> Fixture for writing out specific parameterisation information
+  function toString(this) result(string)
+
+    class(MultiplyTestParameters), intent(in) :: this
+    character(:), allocatable :: string
+
+    string = trim(this%desc)
+
+  end function toString
+
+  ! ========================================================================
 
   @test
   subroutine test_multiply_numbers()
