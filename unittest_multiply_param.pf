@@ -20,7 +20,29 @@ module unittest_multiply_param
     procedure :: toString
   end type MultiplyTestParameters
 
+  !> Typedef for a test case taking MultiplyTestParameters
+  @testCase(constructor=multiply_test_case_constructor)
+  type, extends (ParameterizedTestCase) :: MultiplyTestCase
+    type(MultiplyTestParameters) :: params
+  end type MultiplyTestCase
+
 contains
+
+  !> A fixture for varying the multiplication parameters
+  function get_multiply_parameters() result(params)
+
+    type(MultiplyTestParameters), allocatable :: params(:)
+
+    params = [ &
+      MultiplyTestParameters(2.0, 2.0, 4.0, trim("+ * +")), &
+      MultiplyTestParameters(-2.0, 2.0, -4.0, trim("+ * -")), &
+      MultiplyTestParameters(2.0, -2.0, -4.0, trim("- * +")), &
+      MultiplyTestParameters(-2.0, -2.0, 4.0, trim("- * -")), &
+      MultiplyTestParameters(3.0, 2.0, 6.0, trim("2 integer")), &
+      MultiplyTestParameters(3.0, 2.5, 7.5, trim("1 real")), &
+      MultiplyTestParameters(3.3, 6.6, 21.78, trim("2 real")) &
+    ]
+  end function get_multiply_parameters
 
   !> Fixture for writing out specific parameterisation information
   function toString(this) result(string)
@@ -32,19 +54,31 @@ contains
 
   end function toString
 
+  !> Constructor for the MultiplyTestCase type
+  function multiply_test_case_constructor(params)
+
+    type(MultiplyTestCase) :: multiply_test_case_constructor
+    type(MultiplyTestParameters), intent(in) :: params
+
+    multiply_test_case_constructor%params = params
+
+  end function multiply_test_case_constructor
+
   ! ========================================================================
 
-  @test
-  subroutine test_multiply_numbers()
+  @test(testParameters={get_multiply_parameters()})
+  subroutine test_multiply_numbers(this)
     !! Test that multiplying two numbers returns the expected result
+
+    class(MultiplyTestCase), intent(inout) :: this
 
     real(wp) :: num1, num2  !! numbers to multiply
     real(wp) :: product     !! The product from multiplying
     real(wp) :: expected    !! The expected result
 
-    num1 = 2.0_wp
-    num2 = 2.0_wp
-    expected = 4.0_wp
+    num1 = this%params%a
+    num2 = this%params%b
+    expected = this%params%expected
 
     product = multiply_numbers(num1, num2)
 
