@@ -1,0 +1,34 @@
+!| unittest_multiply_param.pf
+!  pFUnit file containing parameterised test for multiplying numbers
+
+module unittest_multiply_param
+
+  use, intrinsic :: iso_fortran_env, only: wp => real64
+  use funit
+  use multiply_mod, only: multiply_numbers
+
+  implicit none
+
+  public
+
+contains
+
+  @test
+  subroutine test_multiply_numbers()
+    !! Test that multiplying two numbers returns the expected result
+
+    real(wp) :: num1, num2  !! numbers to multiply
+    real(wp) :: product     !! The product from multiplying
+    real(wp) :: expected    !! The expected result
+
+    num1 = 2.0_wp
+    num2 = 2.0_wp
+    expected = 4.0_wp
+
+    product = multiply_numbers(num1, num2)
+
+    @assertEqual(expected, product)
+
+  end subroutine test_multiply_numbers
+
+end module unittest_multiply_param
