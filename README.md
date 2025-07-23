@@ -1,5 +1,10 @@
 # pFUnit Parameterization Demonstration
 
+![Fortran](https://img.shields.io/badge/Fortran-2008-purple)
+![GitHub](https://img.shields.io/github/license/jatkinson1000/pfunit-parameterization-demo)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jatkinson1000/pfunit-parameterization-demo/test_build.yaml?label=tests)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jatkinson1000/pfunit-parameterization-demo/static_analysis.yaml?label=quality)
+
 This code accompanies a post I wrote about using the Fortran unit testing framework
 [pFUnit](https://github.com/Goddard-Fortran-Ecosystem/pFUnit) to write and run
 parameterized tests.
