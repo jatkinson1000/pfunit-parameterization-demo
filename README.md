@@ -5,7 +5,8 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jatkinson1000/pfunit-parameterization-demo/test_build.yaml?label=tests)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jatkinson1000/pfunit-parameterization-demo/static_analysis.yaml?label=quality)
 
-This code accompanies a post I wrote about using the Fortran unit testing framework
+This code accompanies [a post](https://jackatkinson.net/post/fortran_parameterizing_pfunit/)
+I wrote about using the Fortran unit testing framework
 [pFUnit](https://github.com/Goddard-Fortran-Ecosystem/pFUnit) to write and run
 parameterized tests.
 
@@ -17,6 +18,10 @@ In this demo I take a simple Fortran code that multiplies two numbers together,
 supported by a simple pFUnit test.
 I then provide a parameterized version of the test to indicate the benefits of utilizing
 parameterization, and the changes required to accommodate it.
+
+For a full walkthrough and explanation of this process please refer to the
+[accompanying article on my website](https://jackatkinson.net/post/fortran_parameterizing_pfunit/),
+also included here under [`article.md`](article.md).
 
 
 ## Dependencies
